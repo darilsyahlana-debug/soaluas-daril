@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Quiz UAS Algoritma & Pemrograman - Universitas Terbuka</title>
+<style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #eef2f7; }
+    h2 { text-align: center; margin-bottom: 10px; }
+    .question-box {
+        background: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .correctAnswer { color: green; font-weight: bold; }
+    .wrongAnswer { color: red; font-weight: bold; }
+    .feedback { margin-top: 5px; font-size: 14px; font-style: italic; }
+    #scoreBox {
+        font-size: 20px;
+        font-weight: bold;
+        padding: 10px;
+        border-left: 5px solid #007bff;
+        background: #e3f2fd;
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+
+<h2>UAS Algoritma & Pemrograman<br>Universitas Terbuka</h2>
+<p>Pilih jawaban terbaik untuk setiap soal. Sistem akan menilai otomatis.</p>
+
+<div id="quizContainer"></div>
+
+<div id="scoreBox">Skor: <span id="score">0</span> / 50</div>
+
+<script>
+const questions = [
+{q:"1. Simbol terminator pada flowchart digunakan untuk...", a:["Menghitung data","Memulai/Mengakhiri proses","Menyimpan data","Menampilkan output"], c:1},
+{q:"2. Tanda panah pada flowchart digunakan untuk...", a:["Menghitung data","Menghubungkan aliran kontrol","Menentukan percabangan","Menginput data"], c:1},
+{q:"3. Perulangan while akan...", a:["Menjalankan dulu baru mengecek kondisi","Mengecek kondisi dulu","Tidak perlu kondisi","Hanya berjalan sekali"], c:1},
+{q:"4. Do..while akan berjalan minimal...", a:["Tidak dijamin","2 kali","1 kali","Tergantung variabel"], c:2},
+{q:"5. Catch digunakan untuk...", a:["Menangani error","Menutup program","Menghapus variabel","Mengubah tipe data"], c:0},
+{q:"6. Array 1D menyimpan data dengan tipe...", a:["Berbeda-beda","Sama","Acak","Tanpa tipe"], c:1},
+{q:"7. Indeks array dimulai dari angka...", a:["1","0","-1","Bebas"], c:1},
+{q:"8. Operator += adalah operator...", a:["Logika","Penugasan singkat","Relasional","Bitwise"], c:1},
+{q:"9. Kesalahan akses indeks array menimbulkan...", a:["ArithmeticException","ArrayIndexOutOfBoundsException","Syntax Error","NullPointerException"], c:1},
+{q:"10. Selection Sort digunakan untuk...", a:["Menyimpan data","Mengurutkan data","Mengacak data","Menghapus data"], c:1},
+
+{q:"11. Jumlah putaran Selection Sort array 5 elemen...", a:["3","4","5","1"], c:1},
+{q:"12. Menu File -> New di draw.io digunakan untuk...", a:["Mengubah warna","Membuat diagram baru","Export file","Zoom"], c:1},
+{q:"13. break dalam switch digunakan untuk...", a:["Keluar dari blok switch","Menghapus case","Menutup program","Mengulang case"], c:0},
+{q:"14. Menu View di draw.io berfungsi untuk...", a:["Compile kode","Mengatur tampilan canvas","Menjalankan program","Menghapus shape"], c:1},
+{q:"15. Kesalahan semantik terjadi saat...", a:["Koma dan titik salah","Logika salah meskipun sintaks benar","Compiler tidak jalan","Variabel hilang"], c:1},
+
+{q:"16. Perulangan bersarang berarti...", a:["Loop dalam loop lain","Loop hanya satu kali","Loop tanpa kondisi","Loop tanpa variabel"], c:0},
+{q:"17. Array sebagai parameter method...", a:["Dibuat salinan baru","Mengacu array asli","Selalu salah","Dihapus otomatis"], c:1},
+{q:"18. P: do..while minimal sekali. Q: karena cek akhir.", a:["P benar Q benar","P benar Q salah","P salah Q benar","Keduanya salah"], c:0},
+{q:"19. Jika try tidak error, maka...", a:["Semua catch dieksekusi","catch dilewati","Program berhenti","Perulangan dijalankan"], c:1},
+{q:"20. Java bersifat case sensitive artinya...", a:["Huruf besar kecil sama","C dan c dianggap berbeda","variabel dibenarkan otomatis","Compiler abaikan huruf"], c:1},
+
+{q:"21. Setelah 3 tahap Selection Sort {15,12,4,6,1} posisi indeks 2...", a:["1","4","6","12"], c:1},
+{q:"22. Kondisi angka>0 dalam loop input switch bertujuan untuk...", a:["Mengulang input","Keluar otomatis","Tidak ada efek","Error"], c:0},
+{q:"23. Zoom out draw.io membuat objek...", a:["Membesar","Mengecil","Berputar","Menghilang"], c:1},
+{q:"24. Output segitiga bintang karena kondisi...", a:["j<=i","i selalu 0","Tanpa break","Array kosong"], c:0},
+{q:"25. Akses indeks salah menyebabkan...", a:["Runtime Error","Syntax Error","Tidak masalah","Output default"], c:0},
+
+{q:"26. Method digunakan ketika...", a:["Kode kecil","Tidak perlu diulang","Ada pemanggilan ulang","Hanya satu proses"], c:2},
+{q:"27. Nilai array berubah jika dikirim ke method karena...", a:["Pass by reference","Pass by name","Pass by clone","Tidak terpengaruh"], c:0},
+{q:"28. d=10 lalu d/=3 hasil d...", a:["10","3.33","0","30"], c:1},
+{q:"29. Switch tanpa break mengakibatkan...", a:["Fall-through","Satu case saja","Syntax error","Stop"], c:0},
+{q:"30. a=10 lalu a+=5 maka...", a:["5","15","10","Error"], c:1},
+
+{q:"31. Percabangan flowchart menghasilkan...", a:["1 arah","2 arah","Tak tentu","Tanpa loop"], c:1},
+{q:"32. Selection Sort mencari nilai minimum mulai dari indeks...", a:["Terakhir","0","Acak","Penengah"], c:1},
+{q:"33. Cascading error disebabkan oleh...", a:["Salah awal sehingga error berantai","Compiler rusak","Memori penuh","Tipe salah"], c:0},
+{q:"34. Buka file lama draw.io menggunakan menu...", a:["Import","Open Existing Diagram","View","Edit"], c:1},
+{q:"35. Array 2D membutuhkan indeks...", a:["1","2","3","4"], c:1},
+
+{q:"36. P: do..while minimal sekali. Q: karena cek awal.", a:["B-B","B-S","S-B","S-S"], c:1},
+{q:"37. x[0] diubah di method menjadi 100. Ketika dicetak hasilnya...", a:["10","100","Tidak tentu","Error"], c:1},
+{q:"38. For-each menampilkan urutan array karena...", a:["Traversal sesuai indeks","i naik otomatis","Terbalik","Sort otomatis"], c:0},
+{q:"39. Operator += salah jika dikatakan...", a:["Penjumlahan","Menghemat penulisan","Kurangi efektivitas","Hasil sama"], c:2},
+{q:"40. Loop bersarang infinite jika...", a:["Increment luar saja","Increment dalam saja salah","Tanpa kondisi","Switch-case"], c:1},
+
+{q:"41. switch tanpa default...", a:["Error","Tidak ada output jika tidak cocok","Case pertama tetap jalan","Auto ulang"], c:1},
+{q:"42. fo(int i=0;i<5;i++) merupakan...", a:["Syntax Error","RunTime Error","Logic Error","Benar"], c:0},
+{q:"43. Variabel belum inisialisasi dipakai ->", a:["Normal","Semantik Error","Compiler memperbaiki","Default otomatis"], c:1},
+{q:"44. Konektor flowchart digunakan untuk...", a:["Percabangan","Menyambung alur yang jauh","Output","Kalkulasi"], c:1},
+{q:"45. Arrange di draw.io untuk...", a:["Atur posisi objek","Compile program","Import data","Sorting"], c:0},
+
+{q:"46. Urutan catch yang benar adalah...", a:["Dari umum ke spesifik","Tidak penting","Spesifik -> umum","Acak"], c:2},
+{q:"47. Jika elemen sudah lebih kecil...", a:["Tetap tukar","Tidak tukar","Program berhenti","Kembali awal"], c:1},
+{q:"48. Hasil switch dipilih berdasarkan...", a:["Pencocokan nilai case","Urutan input","Tipe data","Error"], c:0},
+{q:"49. Efisiensi akses array 2D tergantung...", a:["Traversal","Ukuran baris","Tipe array","Urutan huruf"], c:0},
+{q:"50. System.out.printIn salah karena...", a:["Huruf besar kecil beda","Tidak error","Auto fix","Input salah"], c:0},
+];
+
+let score = 0;
+
+const quizContainer = document.getElementById("quizContainer");
+questions.forEach((item, i) => {
+    let html = `<div class="question-box"><p><b>${item.q}</b></p>`;
+    item.a.forEach((option,j)=>{
+        html += `<label><input type="radio" name="q${i}" value="${j}"
+        onclick="checkAnswer(${i},${j})"> ${option}</label><br>`;
+    });
+    html += `<div id="feedback${i}" class="feedback"></div></div>`;
+    quizContainer.innerHTML += html;
+});
+
+function checkAnswer(i, chosen){
+    const correct = questions[i].c;
+    const feedback = document.getElementById("feedback"+i);
+
+    if(chosen === correct){
+        feedback.innerHTML = "Benar ✓";
+        feedback.className = "feedback correctAnswer";
+        score++;
+    } else {
+        feedback.innerHTML = `Salah ✕<br><span class='correctAnswer'>Jawaban benar: ${questions[i].a[correct]}</span>`;
+        feedback.className = "feedback wrongAnswer";
+    }
+    document.getElementById("score").textContent = score;
+}
+</script>
+
+</body>
+</html>
